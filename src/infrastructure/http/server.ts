@@ -5,14 +5,14 @@ import router from "./router.ts";
 
 const app = express();
 
-connectToMongoDB();
-
 app.use(express.json());
 
 app.use("/", router);
 
-export const startServer = (): void => {
+export const startServer = async (): Promise<void> => {
   const port = process.env.PORT || 4000;
+
+  await connectToMongoDB();
 
   app.listen(port, () => console.log(`Server running port: ${port}`));
 };
