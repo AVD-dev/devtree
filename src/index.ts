@@ -1,8 +1,4 @@
-import express from "express";
-
-const app = express();
-
-app.get("/", (req, res) => res.send("Hola mundoooo		"));
+import app from "./server/server.ts";
 
 const port = process.env.PORT || 4000;
 
