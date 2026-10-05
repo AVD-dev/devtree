@@ -2,7 +2,8 @@ import { Router } from "express";
 import { RegisterAccountUseCase } from "../../application/use-cases/register-account.use-case.ts";
 import { ScryptPasswordHasher } from "../crypto/scrypt-password-hasher.ts";
 import { MongooseAccountRepository } from "../persistence/mongoose/mongoose-account.repository.ts";
-import { registerAccountHandler } from "./register-account.handler.ts";
+import { signUpBodyValidator } from "./handlers/sign-up-body.validator.ts";
+import { signUpHandler } from "./handlers/sign-up.handler.ts";
 
 const router = Router();
 
@@ -13,8 +14,6 @@ const registerAccountUseCase = new RegisterAccountUseCase(
   new ScryptPasswordHasher(),
 );
 
-router.post("/", registerAccountHandler(registerAccountUseCase));
-
-router.get("/foo", (_req, res) => res.send("Foo works"));
+router.post("/", signUpBodyValidator, signUpHandler(registerAccountUseCase));
 
 export default router;
