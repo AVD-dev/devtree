@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import { connectToMongoDB } from "../database/mongoDb.ts";
-import router from "./router.ts";
+import router from "../../accounts/adapters/http/accounts.router.ts";
 
 const app = express();
 

@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && node --test --test-isolation=none dist/accounts/application/use-cases/register-account.use-case.test.js",
     "build": "tsc",
     "start": "node dist/index.js"
   },
