@@ -1,18 +1,31 @@
-import type {
-  AccountRepository,
-  CreateAccountData,
-} from "../../../application/ports/account.repository.ts";
-import type Account from "../../../domain/account.entity.ts";
+import type { AccountRepository } from "../../../application/ports/account.repository.ts";
+import Account from "../../../domain/account.entity.ts";
 import AccountModel from "./account.model.ts";
 
 export class MongooseAccountRepository implements AccountRepository {
-  async create(data: CreateAccountData): Promise<Account> {
-    const document = await AccountModel.create(data);
+  async findByEmail(email: string): Promise<Account | null> {
+    const document = await AccountModel.findOne({ email: email.trim() });
 
-    return {
-      id: document.id,
+    if (!document) {
+      return null;
+    }
+
+    return Account.reconstitute({
+      id: document._id,
       name: document.name,
       email: document.email,
-    };
+      handle: document.handle,
+      passwordHash: document.passwordHash,
+    });
+  }
+
+  async save(account: Account): Promise<void> {
+    await AccountModel.create({
+      _id: account.id,
+      name: account.name,
+      email: account.email,
+      handle: account.handle,
+      passwordHash: account.passwordHash,
+    });
   }
 }
