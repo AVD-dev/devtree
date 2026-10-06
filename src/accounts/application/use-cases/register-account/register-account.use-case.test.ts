@@ -4,10 +4,8 @@ import Account from "../../../domain/account.entity.ts";
 import type { AccountIdGenerator } from "../../ports/account-id-generator.ts";
 import type { AccountRepository } from "../../ports/account.repository.ts";
 import type { PasswordHasher } from "../../ports/password-hasher.ts";
-import {
-  AccountAlreadyExistsError,
-  RegisterAccountUseCase,
-} from "./register-account.use-case.ts";
+import { AccountAlreadyExistsError } from "../../errors/account-already-exist.error.ts";
+import { RegisterAccountUseCase } from "./register-account.use-case.ts";
 
 class AccountRepositoryStub implements AccountRepository {
   accountToReturn: Account | null = null;

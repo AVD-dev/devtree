@@ -1,13 +1,13 @@
 import "dotenv/config";
 import express from "express";
+import { composeAccountsRouter } from "../composition/accounts.composition.ts";
 import { connectToMongoDB } from "../database/mongoDb.ts";
-import router from "../../accounts/adapters/http/accounts.router.ts";
 
 const app = express();
 
 app.use(express.json());
 
-app.use("/", router);
+app.use("/", composeAccountsRouter());
 
 export const startServer = async (): Promise<void> => {
   const port = process.env.PORT || 4000;
