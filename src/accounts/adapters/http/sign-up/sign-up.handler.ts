@@ -2,7 +2,8 @@ import type { Response } from "express";
 import { validationResult } from "express-validator";
 import { AccountAlreadyExistsError } from "../../../application/errors/account-already-exist.error.ts";
 import { type RegisterAccountUseCase } from "../../../application/use-cases/register-account/register-account.use-case.ts";
-import type { BodyRequest, SignUpRequestBody } from "./sign-up.types.ts";
+import type { BodyRequest } from "../shared/body-request.type.ts";
+import type { SignUpRequestBody } from "./sign-up.types.ts";
 
 export function signUpHandler(registerAccount: RegisterAccountUseCase) {
   return async (req: BodyRequest<SignUpRequestBody>, res: Response) => {
