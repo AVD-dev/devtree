@@ -20,11 +20,14 @@ class AccountRepositoryStub implements AccountRepository {
   }
 }
 
-const passwordHasherStub: PasswordHasher = {
-  async hash(password) {
+class PasswordHasherStub implements PasswordHasher {
+  receivedPasswords: string[] = [];
+
+  async hash(password: string): Promise<string> {
+    this.receivedPasswords.push(password);
     return `hashed:${password}`;
-  },
-};
+  }
+}
 
 const idGeneratorStub: AccountIdGenerator = {
   generate() {
@@ -35,9 +38,10 @@ const idGeneratorStub: AccountIdGenerator = {
 describe("RegisterAccountUseCase", () => {
   it("creates and saves a domain entity", async () => {
     const repository = new AccountRepositoryStub();
+    const passwordHasher = new PasswordHasherStub();
     const registerAccount = new RegisterAccountUseCase(
       repository,
-      passwordHasherStub,
+      passwordHasher,
       idGeneratorStub,
     );
     const command = {
@@ -50,6 +54,7 @@ describe("RegisterAccountUseCase", () => {
     const result = await registerAccount.execute(command);
 
     assert.equal(repository.savedAccount, result);
+    assert.deepEqual(passwordHasher.receivedPasswords, ["secret-password"]);
     assert.deepEqual(
       {
         id: result.id,
@@ -70,6 +75,7 @@ describe("RegisterAccountUseCase", () => {
 
   it("does not save when the email is already registered", async () => {
     const repository = new AccountRepositoryStub();
+    const passwordHasher = new PasswordHasherStub();
     repository.accountToReturn = Account.reconstitute({
       id: "existing-account",
       name: "Existing Account",
@@ -79,7 +85,7 @@ describe("RegisterAccountUseCase", () => {
     });
     const registerAccount = new RegisterAccountUseCase(
       repository,
-      passwordHasherStub,
+      passwordHasher,
       idGeneratorStub,
     );
 
@@ -93,5 +99,6 @@ describe("RegisterAccountUseCase", () => {
       AccountAlreadyExistsError,
     );
     assert.equal(repository.savedAccount, undefined);
+    assert.deepEqual(passwordHasher.receivedPasswords, []);
   });
 });
